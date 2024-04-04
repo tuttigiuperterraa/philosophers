@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gcosenza <gcosenza@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 08:33:48 by gcosenza          #+#    #+#             */
-/*   Updated: 2024/04/03 08:57:54 by gcosenza         ###   ########.fr       */
+/*   Updated: 2024/04/04 07:59:26 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include <unistd.h>
 
 typedef	struct	s_param
 {
@@ -16,7 +18,7 @@ typedef	struct	s_param
 	unsigned int	t_die;
 	unsigned int	t_eat;
 	unsigned int	t_sleep;
-	unsigned int	n_eat;
+	unsigned int	*n_eat;
 }	t_params;
 
 int	check_input(char **argv, int n)
@@ -38,10 +40,31 @@ int	check_input(char **argv, int n)
 	}
 	return (1);
 }
-
-void	set_param(char **argc, int argv, t_params params)
+unsigned int	*ft_atoi(const char *nptr)
 {
-	//atoi
+	int	i;
+	unsigned int	*num;
+
+	i = 0;
+	*num = 0;
+	while (nptr[i] >= 48 && nptr[i] <= 57)
+	{
+		*num = 10 * *num + nptr[i] - 48;
+		i++;
+	}
+	return (num);
+}
+
+void	set_param(int argc, char **argv, t_params *params)
+{
+	(*params).n_philos = *ft_atoi(argv[1]);
+	(*params).t_die = *ft_atoi(argv[2]);
+	(*params).t_eat = *ft_atoi(argv[3]);
+	(*params).t_sleep = *ft_atoi(argv[4]);
+	if (argv[5])
+		(*params).n_eat = ft_atoi(argv[5]);
+	else
+		(*params).n_eat = (void *)NULL;
 }
 
 int	 main(int argc, char **argv)
@@ -57,9 +80,9 @@ int	 main(int argc, char **argv)
 	}
 	if (!check_input(argv, argc)) //all params should be numbers
 	{
-		write(1, "Only positive int accepted\n", 27);
+		write(1, "Only positive unsigned int accepted\n", 27);
 		return(1);
 	}
-	set_param(argv,argc, params); //convert char to numbers and fill the struct
+	set_param(argc, argv, &params); //convert char to numbers and fill the struct
 	return (0);
 }
